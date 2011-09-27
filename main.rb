@@ -6,14 +6,6 @@ module OrderedJob
   def dependency_tree_for job_lines
     return "" if !job_lines || job_lines == "" || job_lines == "\n"
 
-    all_depends_for = lambda do |jobs, job|
-      job.deps.map do |dep|
-        j = jobs.find {|j| j.name == dep }
-        all_depends_for[jobs, j] if j.deps
-        j.flatten
-      end
-    end
-
     changed_deps = false
 
     job_lines.split("\n").map do |job|
@@ -34,9 +26,17 @@ module OrderedJob
     # Basically just recurse and catch the Stack Error when we
     # hit circular deps.
     instance_eval do
+      all_depends_for = lambda do |job|
+        job.deps.map do |dep|
+          j = self.find {|j| j.name == dep }
+          all_depends_for[j] if j.deps
+          j.flatten
+        end
+      end
+
       each do |job|
         begin
-          new_deps = all_depends_for[self, job].flatten || []
+          new_deps = all_depends_for[job].flatten || []
           unless job.deps == new_deps
             changed_deps = true
             job[1] = new_deps
