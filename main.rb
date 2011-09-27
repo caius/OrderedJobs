@@ -4,8 +4,6 @@ module OrderedJob
   CircularReference = Class.new Error
 
   def dependency_tree_for job_lines
-    return "" if !job_lines || job_lines == "" || job_lines == "\n"
-
     changed_deps = false
 
     job_lines.split("\n").map do |job|
