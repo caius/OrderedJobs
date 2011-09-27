@@ -15,10 +15,6 @@ module OrderedJob
         self
       end
     end.
-    
-    each do |job|
-      raise SelfReferentialJob if job.deps.include?(job.name)
-    end.
 
     # MAAAAAAAAAAAAAAASIVE hack to figure out circular deps.
     # Basically just recurse and catch the Stack Error when we
@@ -33,6 +29,8 @@ module OrderedJob
       end
 
       each do |job|
+        raise SelfReferentialJob if job.deps.include?(job.name)
+
         begin
           new_deps = all_depends_for[job].flatten || []
           unless job.deps == new_deps
