@@ -6,6 +6,8 @@ My solution for the [OrderedJob kata][kata]. It's mostly an exercise in how to n
 
 It's **not** pretty. And uses far less variables than it should. And has a magical invocation of `Array#reverse` to pass the tests.
 
+*The Magic/More Magic comments is homage to <http://catb.org/jargon/html/magic-story.html>*
+
 ## Licence
 
 MIT (c) Caius Durling 2011
